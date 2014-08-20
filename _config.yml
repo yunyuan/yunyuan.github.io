@@ -3,18 +3,24 @@
 permalink: /:categories/:year/:month/:day/:title 
 
 exclude: [".rvmrc", ".rbenv-version", "README.md", "Rakefile", "changelog.md"]
-pygments: true
+#pygments: true
+# auto: true
+highlighter: null
 
 # Themes are encouraged to use these universal variables 
 # so be sure to set them if your theme uses them.
 #
 title : 含瀚家的老袁
+url: http://yunyuan.github.io/
+feed: /atom.xml
 tagline: Site Tagline
 author :
   name : Yun Yuan
   email : yuanyun237@gmail.com
   github : yunyuan@github.com
   feedburner : feedname
+  #keywords :
+  #description:
 
 # The production_url is only used when full-domain names are needed
 # such as sitemap.txt 
@@ -72,8 +78,9 @@ JB :
   archive_path: /archive.html
   categories_path : /categories.html
   tags_path : /tags.html
-  atom_path : /atom.xml
-  rss_path : /rss.xml
+  about_path : /about.html
+  #atom_path : /atom.xml
+  #rss_path : /rss.xml
 
   # Settings for comments helper
   # Set 'provider' to the comment provider you want to use.
