@@ -4,6 +4,7 @@ category : Python
 title: Python的 type() 和 __class__
 tags : [Python]
 ---
+{% include JB/setup %}
 
 最近在公司内部的问答系统上有同事问了一个问题：`Python`中的`type()`和`__class__`有什么差别？
 

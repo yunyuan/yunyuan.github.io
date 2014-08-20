@@ -1,0 +1,120 @@
+/*.pln{color:#000}@media screen{.str{color:#080}.kwd{color:#008}.com{color:#800}.typ{color:#606}.lit{color:#066}.pun,.opn,.clo{color:#660}.tag{color:#008}.atn{color:#606}.atv{color:#080}.dec,.var{color:#606}.fun{color:red}}@media print,projection{.str{color:#060}.kwd{color:#006;font-weight:bold}.com{color:#600;font-style:italic}.typ{color:#404;font-weight:bold}.lit{color:#044}.pun,.opn,.clo{color:#440}.tag{color:#006;font-weight:bold}.atn{color:#404}.atv{color:#060}}pre.prettyprint{padding:10px 15px;border:1px solid #ddd}ol.linenums{margin-top:0;margin-bottom:0}li.L0,li.L1,li.L2,li.L3,li.L5,li.L6,li.L7,li.L8{list-style-type:none}li.L1,li.L3,li.L5,li.L7,li.L9{background:#eee}*/
+/*
+ * Derived from einaros's Sons of Obsidian theme at
+ * http://studiostyl.es/schemes/son-of-obsidian by
+ * Alex Ford of CodeTunnel:
+ * http://CodeTunnel.com/blog/post/71/google-code-prettify-obsidian-theme
+ */
+ /*
+.str{color: #EC7600;}
+.kwd{color:#93C763;}
+.com{color:#66747B;}
+.typ{color:#678CB1;}
+.lit{color:#FACD22;}
+.pun{color:#F1F2F3;}
+.pln{color:#F1F2F3;}
+.tag{color:#8AC763;}
+.atn{color:#E0E2E4;}
+.atv{color:#EC7600;}
+.dec{color:purple;}
+pre.prettyprint {border:0px solid #888;}
+ol.linenums{margin-top:0;margin-bottom:0;}
+.prettyprint{background:#303030;}
+li.L0, li.L1, li.L2, li.L3, li.L4, li.L5, li.L6, li.L7, li.L8, li.L9{color:#555;}
+li.L1, li.L3, li.L5, li.L7, li.L9{background:#111;}
+@media print {
+    .str{color:#060;}
+    .kwd{color:#006;font-weight:bold;}
+    .com{color:#600;font-style:italic;}
+    .typ{color:#404;font-weight:bold;}
+    .lit{color:#044;}
+    .pun{color:#440;}
+    .pln{color:#000;}
+    .tag{color:#006;font-weight:bold;}
+    .atn{color:#404;}
+    .atv{color:#060;}
+}
+*/
+
+.com { color: #008200;font-style:italic;}
+.kwd { color: rgb(163, 21, 21);font-weight:bold; }
+.typ {color: teal;font-weight:bold;}
+.lit { color: #195f91; }
+.pun, .opn, .clo { color: #93a1a1; }
+.fun { color: #dc322f; }
+.str, .atv { color: #D14; }
+.linenums{ color: #1e347b; }
+.tag { color: #1e347b;font-weight:bold;}
+.atn, .dec, .var { color: teal; }
+.pln { color: #48484c; }
+
+/* Put a border around prettyprinted code snippets. */
+pre.prettyprint { padding: 2px; overflow: auto;}
+
+.prettyprint {
+  padding: 8px;
+  background-color: #f7f7f9;
+  border: 1px solid #e1e1e8;
+}
+.prettyprint.linenums {
+  -webkit-box-shadow: inset 40px 0 0 #fbfbfc, inset 43px 0 0 rgb(44, 245, 35);
+     -moz-box-shadow: inset 40px 0 0 #fbfbfc, inset 43px 0 0 rgb(44, 245, 35);
+          box-shadow: inset 40px 0 0 #fbfbfc, inset 43px 0 0 rgb(44, 245, 35);
+}
+
+/* Specify class=linenums on a pre to get line numbering */
+ol.linenums {
+  margin: 0 0 0 33px; /* IE indents via margin-left */
+} 
+ol.linenums li {
+  padding-left: 12px;
+  color: #bebec5;
+  line-height: 3px;
+  text-shadow: 0 1px 0 #fff;
+}
+
+pre code {
+display: block;
+padding: 3px;
+margin: 0 0 9px;
+color: inherit;
+line-height: 12px;
+font-size: 14px;
+font-family: Consolas,"Courier New",sans-serif,Menlo, Monaco,monospace;
+}
+
+code, pre {
+  padding: 0 3px 2px;
+  font-family: Consolas, Menlo, Monaco, "Courier New", monospace;
+  font-size: 14px;
+  color: #333333;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+code {
+  padding: 3px 4px;
+  color: #d14;
+  background-color: #f7f7f9;
+}
+pre {
+  display: block;
+  padding: 3px;
+  margin: 0 0 9px;
+  font-size: 14px;
+  line-height: 6px;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+pre.prettyprint {
+  margin-bottom: 18px;
+}
+pre code {
+  padding: 0;
+  background-color: transparent;
+}
+
