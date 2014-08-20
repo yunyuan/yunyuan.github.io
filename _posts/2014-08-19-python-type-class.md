@@ -58,7 +58,7 @@ tags : [Python]
 ## Python Object
 `Python`中一切皆对象。所有对象都以一个`PyObject_HEAD`开头。 
 
-** object.h **
+**object.h**
 
     typedef struct _object {
         PyObject_HEAD
@@ -74,7 +74,7 @@ tags : [Python]
 
 `type`对象包含了很多关于对象的元信息：类型名字(`tp_name`)，创建该类型对象时分配内存空间大小的信息(`tp_basicsize`和`tp_itemsize`)，一些操作信息(`tp_call`, `tp_new`等)，还有其他如`__mro__`(`tp_mro`), `__bases__`(`tp_bases`)等。 
 
-** object.h **
+**object.h**
 
     typedef struct _typeobject {
         PyObject_VAR_HEAD
@@ -107,7 +107,7 @@ tags : [Python]
 
 我们看下运行`type(obj)`时调用到的一系列函数。
 
-** abstract.c **
+**abstract.c**
 
     PyObject *
     PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw)
@@ -128,7 +128,7 @@ tags : [Python]
 
 这里的`func`是`obj`的`ob_type`, 以`f = Foo()`为例的话就是`Foo`。那`func->ob_type`当然就是`type`了。
 
-** typeobject.c **
+**typeobject.c**
 
     PyTypeObject PyType_Type = {
         PyVarObject_HEAD_INIT(&PyType_Type, 0)
@@ -144,7 +144,7 @@ tags : [Python]
 
 从上面`PyType_Type`的定义可以看到`type`的`tp_call`就是`type_call`函数：
 
-** typeobject.c **
+**typeobject.c**
 
     static PyObject *
     type_call(PyTypeObject *type, PyObject *args, PyObject *kwds)
@@ -184,7 +184,7 @@ tags : [Python]
 
 `type_call`中先调用`tp_new`指向的函数(`type_new`)，然后再做分支。对`type(obj)`调用来说就是直接返回`tp_new`得到的对象。而对`type(cls, bases, dict)`来说还会调用`tp_init`指向的函数，这在自定义`metaclass`时会用到。  
 
-** typeobject.c **
+**typeobject.c**
 
     static PyObject *
     type_new(PyTypeObject *metatype, PyObject *args, PyObject *kwds)
@@ -209,7 +209,7 @@ tags : [Python]
     }
 
 
-** object.h **
+**object.h**
 
     #define Py_TYPE(ob)             (((PyObject*)(ob))->ob_type)
 
@@ -225,7 +225,7 @@ tags : [Python]
 
 `obj.__class__`就是一个attribute查找。
 
-** typeobject.c **
+**typeobject.c**
 
     static PyGetSetDef object_getsets[] = {
         {"__class__", object_get_class, object_set_class,
@@ -247,7 +247,7 @@ tags : [Python]
 
 来看下`f = Foo(); f.__class__`中的函数调用链：
 
-** object.c **
+**object.c**
 
     PyObject *
     PyObject_GetAttr(PyObject *v, PyObject *name)
@@ -265,7 +265,7 @@ tags : [Python]
 
 这里的`v`就是`f`, 而`tp`就是`Foo`, `tp->tp_getattro`就是`PyObject_GenericGetAttr`函数。
 
-** object.c **
+**object.c**
 
     PyObject *
     PyObject_GenericGetAttr(PyObject *obj, PyObject *name)
@@ -338,7 +338,7 @@ tags : [Python]
 
 `_PyObject_GenericGetAttrWithDict`中先调用`_PyType_Lookup`从`Foo`的`tp_mro`中查到`__class__`属性(来自`Foo`的基类`object`)，该属性是一个`data descriptor`，最终调用了`object_get_class`。  
 
-** typeobject.c **
+**typeobject.c**
 
     static PyObject *
     object_get_class(PyObject *self, void *closure)
@@ -361,7 +361,7 @@ tags : [Python]
 
 **Case 1**中得到的`__class__`是一个data descriptor，给它赋值实际上调用的是`object_set_class`函数。
 
-** typeobject.c **
+**typeobject.c**
 
     static int
     object_set_class(PyObject *self, PyObject *value, void *closure)
@@ -441,7 +441,7 @@ tags : [Python]
 
 为什么这里的两个`isinstance`都返回`True`呢？  
 
-** object.h **
+**object.h**
 
     #define Py_TYPE(ob)             (((PyObject*)(ob))->ob_type)
 
@@ -470,7 +470,7 @@ tags : [Python]
 
 最终`isinstance(obj, cls)`会调用`PyObject_IsInstance`。
 
-** abstract.c **
+**abstract.c**
 
     int
     PyObject_IsInstance(PyObject *inst, PyObject *cls) // Yun: "isinstance(obj, cls)" will call it
@@ -529,7 +529,7 @@ tags : [Python]
 
 从`__instancecheck__` 到 `recursive_isinstance`:
 
-** typeobject.c **
+**typeobject.c**
 
     static PyMethodDef type_methods[] = {
         {"mro", (PyCFunction)mro_external, METH_NOARGS,
