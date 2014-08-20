@@ -1,7 +1,8 @@
 ---
 layout: post
 category : Python
-title: Python的 type() 和 __class__
+title: Python中的 type() 和 __class__
+description : 从Python源代码出发，解释了Python中的 type() 和 __class__ 之间的差别
 tags : [Python]
 ---
 {% include JB/setup %}
@@ -50,7 +51,7 @@ tags : [Python]
 
 
 大家看出`Case 1`和`Case 2`的差别了吧。问题来了：
-  1. `type(obj)`到底做了些什么事情？
+  1. `type(obj)`到底做了些什么事情？  
   2. 为什么`a`在改变`__class__`后，`type(a)`还是`ASML`呢？
 
 为了解决这些问题，我们需要深入`Python`源代码。以下源代码来自`Python 2.7.8`。
@@ -218,10 +219,10 @@ tags : [Python]
 
 ## 为什么`a`在改变`__class__`后，`type(a)`还是`ASML`呢
 要回答这个问题，我们要先回顾下通过`obj.xxx`查找对象的attribute的搜索顺序：  
- 1. type对象及其基类的`__dict__`，如果是data descriptor，返回这个
- 2. obj的`__dict__`
- 3. type对象中的non-data descriptor
- 4. type对象中的`__dict__`
+ 1. type对象及其基类的`__dict__`，如果是data descriptor，返回这个  
+ 2. obj的`__dict__`  
+ 3. type对象中的non-data descriptor  
+ 4. type对象中的`__dict__`  
 
 `obj.__class__`就是一个attribute查找。
 
@@ -355,8 +356,8 @@ tags : [Python]
 而在**Case 2**中我们自定义了`__class__`，所以在`ASML.__dict__`中找到有这个attribute后就返回了，不会再去找`mro`中的下一个(`object`)。但是这个attribute不是data descriptor，根据前面提到的attribute搜索顺序，我们接着在`a.__dict__`中找，也没有，那就直接返回`ASML`中的找到的那个了。
 
 ### 为什么设置__class__后，Case 1和Case 2有差别
-** obj.xxx = yyy 设置attribute时的顺序 **  
- 1. 如果type对象及其基类中存在该attribute，而且是data descriptor，则用该data descriptor设置
+**obj.xxx = yyy 设置attribute时的顺序**  
+ 1. 如果type对象及其基类中存在该attribute，而且是data descriptor，则用该data descriptor设置  
  2. 否则添加到`obj.__dict__`里  
 
 **Case 1**中得到的`__class__`是一个data descriptor，给它赋值实际上调用的是`object_set_class`函数。
