@@ -13,8 +13,7 @@ tagline: Site Tagline
 author :
   name : Yun Yuan
   email : yuanyun237@gmail.com
-  github : yunyuan
-  twitter : username
+  github : yunyuan@github.com
   feedburner : feedname
 
 # The production_url is only used when full-domain names are needed
@@ -30,7 +29,7 @@ production_url : http://yunyuan.github.io
 # All Jekyll-Bootstrap specific configurations are namespaced into this hash
 #
 JB :
-  version : 0.3.0
+  version : 0.2.13
 
   # All links will be namespaced by BASE_PATH if defined.
   # Links in your website should always be prefixed with {{BASE_PATH}}
@@ -93,11 +92,19 @@ JB :
     #   num_posts: 5
     #   width: 580
     #   colorscheme: light
-
-    provider : duoshuo
-    duoshuo:
-        #short_name : 含瀚家的老袁
-        short_name : yuanyun237
+    provider : weibo
+    disqus :
+      short_name : jekyllbootstrap
+    livefyre :
+      site_id : 
+    intensedebate :
+      account : 
+    facebook :
+      appid : 
+      num_posts: 5
+      width: 580
+      colorscheme: light
+    
   # Settings for analytics helper
   # Set 'provider' to the analytics provider you want to use.
   # Set 'provider' to false to turn analytics off globally.
