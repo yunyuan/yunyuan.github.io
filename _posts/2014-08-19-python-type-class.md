@@ -2,10 +2,10 @@
 layout: post
 category : Python
 title: Python中的 type() 和 __class__
-description : 从Python源代码出发，解释了Python中的 type() 和 __class__ 之间的差别
+description : 最近在公司内部的问答系统上有同事问了一个问题：`Python`中的`type()`和`__class__`有什么差别？
 tags : [Python]
 ---
-{% include JB/setup %}
+
 
 最近在公司内部的问答系统上有同事问了一个问题：`Python`中的`type()`和`__class__`有什么差别？
 
@@ -50,14 +50,15 @@ tags : [Python]
     (<class '__main__.Brion'>, <class '__main__.ASML'>)
 
 
-大家看出`Case 1`和`Case 2`的差别了吧。问题来了：
+大家看出`Case 1`和`Case 2`的差别了吧。问题来了：  
   1. `type(obj)`到底做了些什么事情？  
   2. 为什么`a`在改变`__class__`后，`type(a)`还是`ASML`呢？
 
 为了解决这些问题，我们需要深入`Python`源代码。以下源代码来自`Python 2.7.8`。
 
-## Python Object
-`Python`中一切皆对象。所有对象都以一个`PyObject_HEAD`开头。 
+Python Object
+---
+`Python`中一切皆对象。所有对象的数据结构都以一个`PyObject_HEAD`开头。 
 
 **object.h**
 
@@ -103,7 +104,8 @@ tags : [Python]
 
 对于对象`f = Foo()`来说，它的`ob_type`就是`Foo`, 而`Foo`的`ob_type`则是`type`。
 
-## `type(obj)`到底做了些什么事情
+`type(obj)`到底做了些什么事情
+---
 上面提到的每个对象都有的`ob_type`其实就是`type(obj)`返回的对象。
 
 我们看下运行`type(obj)`时调用到的一系列函数。
@@ -127,7 +129,7 @@ tags : [Python]
         return NULL;
     }
 
-这里的`func`是`obj`的`ob_type`, 以`f = Foo()`为例的话就是`Foo`。那`func->ob_type`当然就是`type`了。
+这里的`func`是`obj`的`ob_type`，以`f = Foo()`为例的话就是`Foo`。那`func->ob_type`当然就是`type`了。
 
 **typeobject.c**
 
@@ -167,7 +169,7 @@ tags : [Python]
                 PyTuple_Check(args) && PyTuple_GET_SIZE(args) == 1 &&
                 (kwds == NULL ||
                  (PyDict_Check(kwds) && PyDict_Size(kwds) == 0)))
-                return obj;                    // Yun: type(obj) returns from here
+                return obj;                         // Yun: type(obj) returns from here
             /* If the returned object is not an instance of type,
                it won't be initialized. */
             if (!PyType_IsSubtype(obj->ob_type, type))
@@ -180,7 +182,7 @@ tags : [Python]
                 obj = NULL;
             }
         }
-        return obj;                       // Yun: type(cls, bases, dict) returns from here
+        return obj;                              // Yun: type(cls, bases, dict) returns from here
 
 
 `type_call`中先调用`tp_new`指向的函数(`type_new`)，然后再做分支。对`type(obj)`调用来说就是直接返回`tp_new`得到的对象。而对`type(cls, bases, dict)`来说还会调用`tp_init`指向的函数，这在自定义`metaclass`时会用到。  
@@ -217,14 +219,15 @@ tags : [Python]
 
 可见`type(obj)`其实就是返回对象的`ob_type`。
 
-## 为什么`a`在改变`__class__`后，`type(a)`还是`ASML`呢
-要回答这个问题，我们要先回顾下通过`obj.xxx`查找对象的attribute的搜索顺序：  
- 1. type对象及其基类的`__dict__`，如果是data descriptor，返回这个  
+为什么`a`在改变`__class__`后，`type(a)`还是`ASML`呢
+---
+要回答这个问题，我们要先回顾下通过`obj.xxx`查找对象的 attribute 时的搜索顺序：  
+ 1. type对象及其基类的`__dict__`。如果是 data descriptor，返回这个 data descriptor的 `__get__` 结果
  2. obj的`__dict__`  
- 3. type对象中的non-data descriptor  
- 4. type对象中的`__dict__`  
+ 3. 第一步中找到的如果是 non-data descriptor， 返回这个 non-data descriptor的 `__get__` 结果
+ 4. type对象中的`__dict__`，也就是直接返回第一步中找到的对象  
 
-`obj.__class__`就是一个attribute查找。
+`obj.__class__`就是一个 attribute 查找。
 
 **typeobject.c**
 
@@ -246,7 +249,7 @@ tags : [Python]
     };
 
 
-来看下`f = Foo(); f.__class__`中的函数调用链：
+来看下`f = Foo(); f.__class__;`中的函数调用链：
 
 **object.c**
 
@@ -348,19 +351,21 @@ tags : [Python]
         return (PyObject *)(Py_TYPE(self));
     }
 
-从`object_get_class`函数可以看出，对于`f = Foo(); f.__class__`来说也是返回的`Foo`对象的`ob_type`。这就解释了**Case 1**中为什么`type(b)`和`b.__class__`是相等的。
+从`object_get_class`函数可以看出，对于`f = Foo(); f.__class__;`来说也是返回的`Foo`对象的`ob_type`。这就解释了**Case 1**中为什么`type(b)`和`b.__class__`是相等的。
+___
 
 ### 那为什么**Case 2**中的`type(a)`和`a.__class__`不相等呢？
-因为**Case 1**中没有自定义`__class__`，所以查找`__class__`时在`Bar`中没找到，接着就去`Bar`的基类`object`中找，正好`object`中定义了一个`__class__`的data descriptor, 就返回这个。  
+因为**Case 1**中没有自定义`__class__`，所以查找`__class__`时在`Bar`中没找到，接着就去`Bar`的基类`object`中找，正好`object`中定义了一个`__class__`的 data descriptor, 就返回这个。  
 
-而在**Case 2**中我们自定义了`__class__`，所以在`ASML.__dict__`中找到有这个attribute后就返回了，不会再去找`mro`中的下一个(`object`)。但是这个attribute不是data descriptor，根据前面提到的attribute搜索顺序，我们接着在`a.__dict__`中找，也没有，那就直接返回`ASML`中的找到的那个了。
+而在**Case 2**中我们自定义了`__class__`，所以在`ASML.__dict__`中找到有这个 attribute 后就返回了，不会再去找`mro`中的下一个(`object`)。但是这里找到的这个 attribute 不是 data descriptor，根据前面提到的 attribute 搜索顺序，我们接着在`a.__dict__`中找，也没有，那就直接返回`ASML`中的找到的那个了。
+___
 
 ### 为什么设置__class__后，Case 1和Case 2有差别
 **obj.xxx = yyy 设置attribute时的顺序**  
- 1. 如果type对象及其基类中存在该attribute，而且是data descriptor，则用该data descriptor设置  
+ 1. 如果type对象及其基类中存在该 attribute，而且是 data descriptor，则用该 data descriptor的`__set__`来设置  
  2. 否则添加到`obj.__dict__`里  
 
-**Case 1**中得到的`__class__`是一个data descriptor，给它赋值实际上调用的是`object_set_class`函数。
+**Case 1**中得到的`__class__`是一个 data descriptor，给它赋值实际上调用的是`object_set_class`函数。
 
 **typeobject.c**
 
@@ -401,7 +406,7 @@ tags : [Python]
     dict_proxy({'__dict__': <attribute '__dict__' of 'Bar' objects>, '__module__': '__main__', '__weakref__': <attribute '__weakref__' of 'Bar' objects>, '__doc__': None})
 
 
-而**Case 2**中得到的`__class__`不是data descriptor。所以`a.__class__ = Foo`会在`a.__dict__`中添加一条记录，而`a`的`ob_type`不会变，`ASML.__dict__`也不会变。
+而**Case 2**中得到的`__class__`不是 data descriptor。所以`a.__class__ = Foo`会在`a.__dict__`中添加一条记录，而`a`的`ob_type`不会变，`ASML.__dict__`也不会变。
 
     >>> a.__dict__
     {}
@@ -415,8 +420,8 @@ tags : [Python]
     >>> ASML.__dict__
     dict_proxy({'__dict__': <attribute '__dict__' of 'ASML' objects>, '__module__': '__main__', '__weakref__': <attribute '__weakref__' of 'ASML' objects>, '__class__': <class '__main__.Foo'>, '__doc__': None})
 
-
-以上的讨论都是基于new style class。对于old style class来说, `type()`不等于`__class__`:
+___
+以上的讨论都是基于**new style class**。对于**old style class**来说, `type()`不等于`__class__`:
 
     >>> class A():
         pass
@@ -426,7 +431,8 @@ tags : [Python]
     (<class __main__.A at 0x0270CFB8>, <type 'instance'>)
 
 
-## 另外一个关于 isintance(obj, cls) 的问题
+另外一个关于 isintance(obj, cls) 的问题
+---
 
     >>> class Foo(object):
         pass
