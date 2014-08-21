@@ -222,9 +222,9 @@ Python Object
 为什么`a`在改变`__class__`后，`type(a)`还是`ASML`呢
 ---
 要回答这个问题，我们要先回顾下通过`obj.xxx`查找对象的 attribute 时的搜索顺序：  
- 1. type对象及其基类的`__dict__`。如果是 data descriptor，返回这个 data descriptor的 `__get__` 结果
+ 1. type对象及其基类的`__dict__`。如果是 data descriptor，返回这个 data descriptor的 `__get__` 结果  
  2. obj的`__dict__`  
- 3. 第一步中找到的如果是 non-data descriptor， 返回这个 non-data descriptor的 `__get__` 结果
+ 3. 第一步中找到的如果是 non-data descriptor， 返回这个 non-data descriptor的 `__get__` 结果  
  4. type对象中的`__dict__`，也就是直接返回第一步中找到的对象  
 
 `obj.__class__`就是一个 attribute 查找。
@@ -362,8 +362,8 @@ ___
 
 ### 为什么设置__class__后，Case 1和Case 2有差别
 **obj.xxx = yyy 设置attribute时的顺序**  
- 1. 如果type对象及其基类中存在该 attribute，而且是 data descriptor，则用该 data descriptor的`__set__`来设置  
- 2. 否则添加到`obj.__dict__`里  
+ 1. 先从type对象及其基类的`__dict__`中查找该 attribute，找到就返回。如果找到的是 data descriptor，则用该 data descriptor的`__set__`来设置  
+ 2. 否则添加到`obj.__dict__`里   
 
 **Case 1**中得到的`__class__`是一个 data descriptor，给它赋值实际上调用的是`object_set_class`函数。
 
