@@ -44,7 +44,7 @@ tags : [XSLT]
         </html>
     </xsl:template>
 
-直接把这几行加到 `<head>` 中不就行了，为什么要把整个 `js/CSS` 文件都嵌进去呢？因为用链接的话需要联网才能用，还是整个嵌入保险些。
+直接把下面这几行加到 `<head>` 中不就行了，为什么要把整个 `js/CSS` 文件都嵌进去呢？因为用链接的话需要联网才能用，还是整个嵌入保险些。
 
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -54,7 +54,7 @@ tags : [XSLT]
 ---
 一般我们转 `HTML`的话都是这样写 `<xsl:output>` 的： **`<xsl:output method="html"/>`**，但这样的话 `XSLT` 文件中的 `<br/>` 会被转成 `<br>`。
 
-`<br>` 在 `HTML` 中是合法的，但去不是合法的 `XHTML/XML element`。因为我需要在脚本中把 `HTML` 文件中的某部分当成 `XML` 来解析，就必须用 `<br/>` 这种格式。
+`<br>` 在 `HTML` 中是合法的，但却不是合法的 `XHTML/XML element`。因为我需要在脚本中把 `HTML` 文件中的某部分当成 `XML` 来解析，就必须用 `<br/>` 这种格式。
 
 解决办法是修改 `<xsl:output>`，按 `XML` 格式来输出，这样 `<br/>` 会转成 `<br />`。
 
@@ -78,6 +78,7 @@ tags : [XSLT]
 在转成 `HTML` 后变成了
 
     <textarea style="width:100%;height:100%;resize:none" />
+
 但是 `<textarea>` 在 `HTML` 中不属于 `selft-closing tag`，也就是说 `<textarea/>` 是非法的。怎么办？
 
 直接在在 `XSLT` 文件中加个空格 `(<textarea>  </textarea>)` 解决不了问题，我们需要再次用到 `<xsl:text>`:
