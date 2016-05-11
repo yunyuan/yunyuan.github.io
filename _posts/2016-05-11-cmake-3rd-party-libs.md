@@ -23,6 +23,7 @@ tags : [CMake]
 
 解决办法
 ---
+
 #### 模块输出的 so 文件
 可以通过设置 CMake 变量 `CMAKE_LIBRARY_OUTPUT_DIRECTORY` 把输出的 so 文件集中放在一起：
 
@@ -129,6 +130,7 @@ CMake 在用 `add_library(XXX SHARED IMPORTED)` 并通过 `IMPORTED_LOCATION` �
 
 其他
 ---
+
 #### `ld.so` 查找 lib 的顺序
 可以通过 `man ld.so` 查看，这里简单列下：
 
@@ -206,3 +208,8 @@ CMake 在用 `add_library(XXX SHARED IMPORTED)` 并通过 `IMPORTED_LOCATION` �
     + exit 0
 
 可以看到 `ldd` 其实就是设置了一些 `LD_XXX` 环境变量然后调用 `ld-linux-x86-64.so.2` 来真正执行。 感兴趣的可以通过 `man ld.so` 查看下这些环境变量的作用。
+
+#### $ORIGIN and RPATH
+如果 `RPATH` 里面指定了 `$ORIGIN`, `ld.so` 在 load 某个 lib 时会把 `$ORIGIN` 解析成可执行文件的路径。这样可以方便的把可执行文件和依赖的 libs 一起拷贝到其他地方，只要他们的相对路径没变，就能运行。
+
+比如某个 `somedir/app` 下的 application 用 `gcc -Wl,-rpath,'$ORIGIN/../lib'` 链接，其依赖的 libs 在 `somedir/lib` 下编译。把 `somedir/app` 和 `somedir/lib` 文件夹一起拷贝到其他地方，不用设置 `LD_LIBRARY_PATH` 也能运行。
